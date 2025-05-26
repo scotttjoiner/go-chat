@@ -1,0 +1,41 @@
+[project]
+name = "chat-ai"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "scotttjoiner",email = "scotttjoiner@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "grpcio (>=1.71.0,<2.0.0)",
+    "grpcio-tools (>=1.71.0,<2.0.0)",
+    "protobuf (>=6.31.0,<7.0.0)",
+    "transformers (>=4.52.3,<5.0.0)",
+    "torch (>=2.7.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+flake8 = "^7.2.0"
+black = "^25.1.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.flake8]
+max-line-length = 88
+exclude = ["chat_ai/proto", "__pycache__"]
+
+[tool.poetry]
+name = "chat-ai"
+packages = [{ include = "chat_ai" }]
+
+[tool.poetry.scripts]
+chat-ai = "chat_ai.main:main"

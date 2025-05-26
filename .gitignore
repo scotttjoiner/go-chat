@@ -23,3 +23,29 @@ go.work.sum
 
 # env file
 .env
+
+# Python virtual environments
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+
+# Poetry files
+**/poetry.lock
+
+# Bytecode and logs
+**/*.pyo
+**/*.pyd
+**/*.log
+
+# Unit test and coverage
+**/.pytest_cache/
+**/.mypy_cache/
+**/htmlcov/
+**/.coverage
+coverage.xml
+
+# IDE and tool files
+**/.vscode/
+**/.idea/

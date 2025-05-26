@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  chat-service:
+    build:
+      context: ./chat-service
+    ports:
+      - "8080:8080"
+    networks:
+      - chatnet
+
+  chat-ai:
+    build:
+      context: ./chat-ai
+    command: poetry run chat-ai
+    volumes:
+      - ./chat-ai:/app
+    working_dir: /app
+    networks:
+      - chatnet
+
+networks:
+  chatnet:

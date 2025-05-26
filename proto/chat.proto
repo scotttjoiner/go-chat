@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "github.com/yourusername/go-chat/proto;chatpb";
+
+// Represents a chat message
+message ChatMessage {
+  string id = 1;
+  string user = 2;
+  string text = 3;
+  string room = 4;
+  int64 timestamp = 5;
+}
+
+// Acknowledgment after sending a message
+message Ack {
+  bool success = 1;
+  string error = 2;
+}
+
+// Request to stream messages from a given room or user
+message StreamRequest {
+  string room = 1;
+}
+
+// Request to send a new message
+message SendRequest {
+  ChatMessage message = 1;
+}
+
+service ChatService {
+  // Sends a single message (e.g., from client or bot)
+  rpc SendMessage(SendRequest) returns (Ack);
+
+  // Streams messages in real time (e.g., to a WebSocket client)
+  rpc StreamMessages(StreamRequest) returns (stream ChatMessage);
+}
