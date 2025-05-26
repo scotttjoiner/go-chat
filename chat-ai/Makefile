@@ -21,7 +21,7 @@ run:
 	$(POETRY) run chat-ai
 
 # Install all dependencies
-install:
+build:
 	$(POETRY) install
 
 # Add a new dependency (e.g., make add PACKAGE=transformers)
@@ -36,7 +36,7 @@ clean:
 lint:
 	$(POETRY) run flake8 chat_ai
 
-format:
+fmt:
 	$(POETRY) run black chat_ai tests
 
 # Run tests
