@@ -7,35 +7,23 @@ on:
     branches: [main]
 
 jobs:
-  chat-service:
-    name: Chat Service Build/Test
+  build:
+    name: Build & Test All Projects
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run Makefile inside Dev Container
+      - name: Build root dev container and run multi-service tests
         uses: devcontainers/ci@v0.3
         with:
-          subFolder: chat-service
           runCmd: |
+            cd chat-service
             make proto
             make build
             make test
             make fmt
-
-  chat-ai:
-    name: Chat AI Build/Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Run Makefile inside Dev Container
-        uses: devcontainers/ci@v0.3
-        with:
-          subFolder: chat-ai
-          runCmd: |
+            cd ../chat-ai
             make install
             make lint
             make build
