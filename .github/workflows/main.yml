@@ -7,32 +7,36 @@ on:
     branches: [main]
 
 jobs:
-  build-test:
-    name: Test All Services in Dev Container
+  chat-service:
+    name: Chat Service Build/Test
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Run Makefile inside Dev Container
+        uses: devcontainers/ci@v0.3
+        with:
+          subFolder: chat-service
+          runCmd: |
+            make proto
+            make build
+            make test
+            make fmt
 
-      - name: Build Dev Container
-        run: |
-          docker build -t go-chat-ci -f .devcontainer/Dockerfile .
+  chat-ai:
+    name: Chat AI Build/Test
+    runs-on: ubuntu-latest
 
-      - name: Build Chat Service
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-service go-chat-ci make build
+    steps:
+      - uses: actions/checkout@v3
 
-      - name: Test Chat Service
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-service go-chat-ci make test
-
-      - name: Build Chat AI
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-ai go-chat-ci make build
-
-      - name: Test Chat AI
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-ai go-chat-ci make test
+      - name: Run Makefile inside Dev Container
+        uses: devcontainers/ci@v0.3
+        with:
+          subFolder: chat-ai
+          runCmd: |
+            make install
+            make lint
+            make build
+            make test
