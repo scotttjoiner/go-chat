@@ -1,4 +1,4 @@
-name: CI with Dev Container
+name: Build & Test
 
 on:
   push:
