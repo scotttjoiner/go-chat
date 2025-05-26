@@ -34,7 +34,7 @@ clean:
 
 # Run linter
 lint:
-	$(POETRY) run flake8
+	$(POETRY) run flake8 chat_ai
 
 format:
 	$(POETRY) run black chat_ai tests

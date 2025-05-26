@@ -1,5 +1,6 @@
 from transformers import pipeline
 
+
 _model = None
 
 def get_model():
