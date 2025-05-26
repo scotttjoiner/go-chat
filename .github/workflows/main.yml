@@ -1,0 +1,38 @@
+name: CI with Dev Container
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    name: Test All Services in Dev Container
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Dev Container
+        run: |
+          docker build -t go-chat-ci -f .devcontainer/Dockerfile .
+
+      - name: Build Chat Service
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-service go-chat-ci make build
+
+      - name: Test Chat Service
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-service go-chat-ci make test
+
+      - name: Build Chat AI
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-ai go-chat-ci make build
+
+      - name: Test Chat AI
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace/chat-ai go-chat-ci make test
