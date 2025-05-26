@@ -1,3 +1,5 @@
+![Build](https://github.com/scotttjoiner/go-chat/actions/workflows/main.yml/badge.svg)
+
 # go-chat
 
 A simple gRPC-based chat system with an AI responder, designed as a mono-repo.  
