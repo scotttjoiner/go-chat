@@ -49,3 +49,30 @@ coverage.xml
 # IDE and tool files
 **/.vscode/
 **/.idea/
+
+# Node dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS and editor cruft
+.DS_Store
+.env
+*.swp
+*.swo
+
+# Optional runtime files
+*.log
+
+# Coverage reports
+coverage/
+
+# Build artifacts (if any)
+dist/
+build/
+
+# VS Code
+.vscode/

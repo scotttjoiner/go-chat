@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Client (Vue)</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <style>
+    body { font-family: sans-serif; padding: 1em; }
+    input, button { margin-top: 0.5em; }
+    #messages { margin-top: 1em; background: #f0f0f0; padding: 1em; height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>Chat Gateway (WebSocket)</h2>
+    <div>
+      <input v-model="username" placeholder="Username" />
+      <input v-model="message" placeholder="Message" @keyup.enter="sendMessage" />
+      <button @click="sendMessage">Send</button>
+    </div>
+    <div id="messages">
+      <div v-for="(msg, i) in messages" :key="i">
+        <strong v-if="msg.user">{{ msg.user }}:</strong> {{ msg.text || msg }}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          username: 'vue-user',
+          message: '',
+          messages: [],
+          ws: null
+        };
+      },
+      mounted() {
+        this.ws = new WebSocket('wss://obscure-space-funicular-q74qvr49wv6xc665x-8081.app.github.dev//ws');
+        this.ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            this.messages.push(data);
+          } catch {
+            this.messages.push(event.data);
+          }
+        };
+        this.ws.onopen = () => this.messages.push('WebSocket connected');
+        this.ws.onerror = () => this.messages.push('WebSocket error');
+        this.ws.onclose = () => this.messages.push('WebSocket closed');
+      },
+      methods: {
+        sendMessage() {
+          if (this.message.trim()) {
+            const msg = {
+              user: this.username,
+              text: this.message
+            };
+            this.ws.send(JSON.stringify(msg));
+            this.message = '';
+          }
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,40 +1,45 @@
 import grpc
+import time
 from chat_ai.proto import chat_pb2, chat_pb2_grpc
-from chat_ai.responder import generate_reply
-
-
-def send_to_chat_service(stub, text: str, user: str = "ai-bot", room: str = "general"):
-    message = chat_pb2.ChatMessage(user=user, text=text, room=room)
-    request = chat_pb2.SendRequest(message=message)
-    stub.SendMessage(request)
+from chat_ai.responder import generate_reply, send_to_chat_service
 
 
 def main():
-    print("Chat AI listening...")
+    print("Chat AI starting...")
 
-    with grpc.insecure_channel("localhost:8080") as channel:
-        stub = chat_pb2_grpc.ChatServiceStub(channel)
+    while True:
+        try:
+            with grpc.insecure_channel("localhost:8080") as channel:
+                stub = chat_pb2_grpc.ChatServiceStub(channel)
 
-        # Start stream
-        stream = stub.StreamMessages(chat_pb2.StreamRequest(room="general"))
+                print("Connected to chat-service. Listening...")
 
-        for incoming in stream:
-            user = incoming.user
-            text = incoming.text
+                stream = stub.StreamMessages(chat_pb2.StreamRequest(room="general"))
 
-            print(f"[{user}]: {text}")
+                for incoming in stream:
+                    user = incoming.user
+                    text = incoming.text
 
-            if user == "ai-bot":
-                continue  # Don't respond to ourselves
+                    if user == "ai-bot" or not "@ai" in text:
+                        continue  # Skip our own messages
 
-            # Generate reply and send back
-            prompt = f"User: {text}\nAI:"
-            reply = generate_reply(prompt)
+                    print(f"[{user}]: {text}")
 
-            send_to_chat_service(stub, reply.strip())
+                    prompt = f"User: {text.replace('@ai', '')}\nAI:"
+                    reply = generate_reply(prompt)
 
-            print(f"[ai-bot]: {reply.strip()}")
+                    send_to_chat_service(stub, reply.strip())
+                    print(f"[ai-bot]: {reply.strip()}")
 
+        except grpc.RpcError as e:
+            print(f"gRPC error: {e.code().name} - {e.details()}")
+            print("Retrying connection in 3 seconds...")
+            time.sleep(3)
+
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            print("Retrying connection in 3 seconds...")
+            time.sleep(3)
 
 if __name__ == "__main__":
     main()

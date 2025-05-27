@@ -1,4 +1,5 @@
 from transformers import pipeline
+from chat_ai.proto import chat_pb2
 
 
 _model = None
@@ -17,6 +18,12 @@ def generate_reply(prompt: str) -> str:
         prompt,
         max_new_tokens=50,  # replaces max_length to avoid conflict
         pad_token_id=50256,
-        truncation=True
+        truncation=True,
+        return_full_text=False
     )
     return output[0]["generated_text"]
+
+def send_to_chat_service(stub, text: str, user: str = "ai-bot", room: str = "general"):
+    message = chat_pb2.ChatMessage(user=user, text=text, room=room)
+    request = chat_pb2.SendRequest(message=message)
+    stub.SendMessage(request)

@@ -1,16 +1,16 @@
-.PHONY: all chat-ai chat-service proto clean test lint build fmt
+.PHONY: all chat-ai chat-service chat-gateway proto clean test lint build fmt
 
 ## Run everything
 all: proto build test
 
 ## Build all projects
-build: chat-service-build chat-ai-build
+build: chat-service-build chat-ai-build chat-gateway-build
 
 ## Run tests for all projects
-test: chat-service-test chat-ai-test
+test: chat-service-test chat-ai-test chat-gateway-test
 
 ## Lint everything (Python only for now)
-lint: chat-ai-lint
+lint: chat-ai-lint chat-gateway-lint
 
 ## Format everything
 fmt: chat-service-fmt chat-ai-fmt
@@ -47,3 +47,12 @@ chat-ai-lint:
 
 chat-ai-fmt:
 	$(MAKE) -C chat-ai fmt
+
+chat-gateway-build:
+	$(MAKE) -C chat-gateway build
+
+chat-gateway-test:
+	$(MAKE) -C chat-gateway test
+
+chat-gateway-lint:
+	$(MAKE) -C chat-gateway lint
