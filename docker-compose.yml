@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   chat-service:
@@ -6,18 +6,27 @@ services:
       context: ./chat-service
     ports:
       - "8080:8080"
-    networks:
-      - chatnet
+    restart: unless-stopped
+
+  chat-gateway:
+    build:
+      context: ./chat-gateway
+    ports:
+      - "8081:8081"
+    depends_on:
+      - chat-service
+    restart: unless-stopped
 
   chat-ai:
     build:
       context: ./chat-ai
-    command: poetry run chat-ai
-    volumes:
-      - ./chat-ai:/app
-    working_dir: /app
-    networks:
-      - chatnet
+    depends_on:
+      - chat-service
+    restart: unless-stopped
 
-networks:
-  chatnet:
+  #chat-client:
+  #  build:
+  #    context: ./chat-client
+  #  ports:
+  #    - "3000:3000"
+  #  restart: unless-stopped

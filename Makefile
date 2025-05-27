@@ -1,4 +1,4 @@
-.PHONY: all chat-ai chat-service chat-gateway proto clean test lint build fmt
+.PHONY: all chat-ai chat-service chat-gateway scripts proto clean test lint build fmt node
 
 ## Run everything
 all: proto build test
@@ -14,6 +14,10 @@ lint: chat-ai-lint chat-gateway-lint
 
 ## Format everything
 fmt: chat-service-fmt chat-ai-fmt
+
+## Run everything
+run-all: 
+	node scripts/src/run-all.js
 
 ## Compile protobufs (both sides, sequentially)
 proto:

@@ -1,13 +1,20 @@
+import logging
 from transformers import pipeline
 from chat_ai.proto import chat_pb2
 
+# Setup once — can go in a shared `utils.py` if you prefer
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 _model = None
 
 def get_model():
     global _model
     if _model is None:
-        print("Loading language model...")
+        logger.info("Loading language model...")
         _model = pipeline("text-generation", model="microsoft/DialoGPT-medium")
     return _model
 

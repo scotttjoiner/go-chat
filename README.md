@@ -2,132 +2,127 @@
 
 # go-chat
 
-A simple gRPC-based chat system with an AI responder, designed as a mono-repo.  
-This project demonstrates real-time streaming using WebSockets/gRPC, AI-generated responses using Python, and cross-language communication using Protocol Buffers.
+A multi-service, cloud-native chat system prototype built to explore gRPC, WebSockets, multi-language service orchestration, and real-time messaging infrastructure.
 
----
+## Overview
 
-## Project Structure
+This system includes:
 
-```
-go-chat/
-├── chat-service/      # Go gRPC server
-│   ├── cmd/server     # Main server entrypoint
-│   ├── internal/logic # ChatService implementation
-│   ├── proto/         # Generated protobuf code (Go)
-│   ├── Makefile       # Build, proto, and test commands
-│   └── Dockerfile     # Container support
-├── chat-ai/           # Python gRPC AI client
-│   ├── chat_ai/       # Source code and generated proto
-│   ├── tests/         # Pytest unit tests
-│   ├── Makefile       # Install, run, test, and lint
-│   ├── Dockerfile     # Dev container and poetry support
-│   └── pyproject.toml # Poetry config
-├── proto/             # Shared protobuf definitions
-│   └── chat.proto
-└── docker-compose.yml (optional)
-```
+- **chat-service**: Core backend (Go) using gRPC for message processing and broadcasting
+- **chat-gateway**: WebSocket bridge (Node.js) between frontend clients and gRPC
+- **chat-ai**: AI responder (Python) powered by Hugging Face transformers, listening via gRPC stream
+- **chat-client**: Lightweight HTML/Vue.js frontend for testing gateway connection
 
----
+## Features
 
-## Requirements
+- Bi-directional chat flow using gRPC and WebSocket
+- Modular, multi-language architecture (Go, Node.js, Python, Vue.js)
+- AI-generated responses using a Hugging Face transformer model
+- Isolated development environments using devcontainers and Dockerfiles
+- Unified `Makefile` and `concurrently`-powered orchestration
+- Docker Compose configuration for full stack deployment
 
-- Go 1.23+
-- Python 3.11+
-- [Poetry](https://python-poetry.org/)
-- `protoc` + plugins (`protoc-gen-go`, `protoc-gen-go-grpc`, `grpcio-tools`)
-- VS Code Codespaces (optional, supported)
+## Development
 
----
-
-## Getting Started
-
-### 1. Clone the Repo
+Each service has its own Makefile for local dev. You can run everything at once with:
 
 ```bash
-git clone https://github.com/yourusername/go-chat.git
-cd go-chat
+make run-all
 ```
 
----
-
-### 2. Compile Protobufs
+Or run them individually:
 
 ```bash
-cd chat-service
-make proto
+make -C chat-service run
+make -C chat-gateway run
+make -C chat-ai run
+make -C chat-client run
 ```
-
-This will:
-- Compile `proto/chat.proto`
-- Output Go bindings into `chat-service/proto/`
-- Output Python bindings into `chat-ai/chat_ai/proto/` (run `make proto` in `chat-ai` too)
-
----
-
-### 3. Run the gRPC Chat Server (Go)
-
-```bash
-cd chat-service
-make run
-```
-
-This will:
-- Start the server on port `8080`
-- Stream a test message to connected clients
-
----
-
-### 4. Run the AI Responder (Python)
-
-```bash
-cd chat-ai
-make install
-make run
-```
-
-This will:
-- Connect to the chat-service
-- Listen for streamed messages (e.g., from `test-user`)
-- Generate an AI reply using a local HuggingFace model
-- Send the reply back via `SendMessage`
-
----
 
 ## Testing
 
-### Go Unit Tests
+Basic unit tests are scaffolded for each service. Run them using:
 
 ```bash
-cd chat-service
-make test
+make -C chat-service test
+make -C chat-ai test
 ```
 
-### Python Unit Tests
+## Docker Compose
+
+To bring up all services:
 
 ```bash
-cd chat-ai
-make test
+docker-compose up --build
 ```
+
+Services will be available at:
+- `chat-service`: gRPC at `localhost:8080`
+- `chat-gateway`: WebSocket server at `localhost:8081`
+- `chat-client`: Vue.js test page served at `localhost:3000`
+
+## License
+
+This project is for educational and prototyping purposes.
+
 
 ---
 
-## Development Tips
+## Full System Overview (Extended)
 
-- To reformat Go code: `make fmt`
-- To reformat Python code: `make format`
-- To clean generated files: `make clean`
-- To regenerate stubs: `make proto`
+### Services
+
+- **chat-gateway**: Node.js WebSocket bridge that proxies messages between frontend clients and `chat-service`
+- **chat-client**: Simple static Vue.js test page served over Python HTTP, connects via WebSocket to the gateway
+- **chat-ai**: Python gRPC stream listener that connects to `chat-service` and replies to user messages using a Hugging Face model
+
+### Development Workflow
+
+Run all services concurrently:
+
+```bash
+make run-all
+```
+
+This uses a custom script powered by [`concurrently`](https://www.npmjs.com/package/concurrently) to orchestrate startup of all services.
+
+Each service also has an individual `Makefile` to support:
+
+- `make run`
+- `make test`
+- `make proto`
+- `make lint` (where applicable)
+
+### Docker Support
+
+To run the full system using Docker:
+
+```bash
+docker-compose up --build
+```
+
+The following ports will be exposed:
+- `8080`: gRPC service (`chat-service`)
+- `8081`: WebSocket gateway (`chat-gateway`)
+- `3000`: Static client HTML page (`chat-client`)
+
+All containers share a virtual network and reference `chat-service` by name.
 
 ---
+
+## Status
+
+All services scaffolded with basic unit tests and development Makefiles.
+The AI responder connects successfully to the gRPC stream.
+Logging, proto generation, and local dev tools are implemented.
 
 ## Roadmap
 
-- [ ] Replace hardcoded message stream with real-time fan-out
-- [ ] Add WebSocket gateway for browser clients
-- [ ] Improve AI response filtering and persona logic
-- [ ] Docker Compose for multi-container local dev
-- [ ] CI/CD pipeline for builds and tests
+- [ ] **Add multi-room support** to enable isolated conversations per room (e.g., `general`, `support`, `random`)
+- [ ] **Externalize configuration** for ports, model selection, and service hosts via environment variables or `.env` files
+- [ ] **Harden service loops** with retries, timeouts, and graceful reconnection for all gRPC streaming clients
+- [ ] **Enhance AI response quality** with context history, prompt tuning, or model upgrade (e.g., replace DialoGPT)
+- [ ] **Integrate logging frameworks** with consistent formats, timestamps, and log levels across all services
 
 ---
 
