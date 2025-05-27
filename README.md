@@ -61,11 +61,6 @@ Services will be available at:
 - `chat-gateway`: WebSocket server at `localhost:8081`
 - `chat-client`: Vue.js test page served at `localhost:3000`
 
-## License
-
-This project is for educational and prototyping purposes.
-
-
 ---
 
 ## Full System Overview (Extended)
