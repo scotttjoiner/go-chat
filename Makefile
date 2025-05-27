@@ -4,7 +4,7 @@
 all: proto build test
 
 ## Build all projects
-build: chat-service-build chat-ai-build chat-gateway-build
+build: chat-service-build chat-ai-build chat-gateway-build scripts-build
 
 ## Run tests for all projects
 test: chat-service-test chat-ai-test chat-gateway-test
@@ -60,3 +60,6 @@ chat-gateway-test:
 
 chat-gateway-lint:
 	$(MAKE) -C chat-gateway lint
+
+scripts-build:
+	$(MAKE) -C scripts build
