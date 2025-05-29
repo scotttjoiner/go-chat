@@ -30,7 +30,9 @@ function App() {
     ws.current = socket;
 
     ws.current.onopen = () => {
-      setMessages(() => [{ system: true, text: 'Connected to chat server.' }]);
+      setMessages(() => [{ 
+        system: true, 
+        text: `Connected to: ${ws.current?.url ?? 'N/A'}` }]);
     };
 
     ws.current.onmessage = (event) => {
@@ -43,8 +45,6 @@ function App() {
       } catch {
         setMessages((prev) => [...prev, { system: true, text: event.data }]);
       }
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    
     };
 
     ws.current.onclose = () => {
@@ -60,6 +60,9 @@ function App() {
       setMessages((prev) => [...prev, { system: true, text: 'WebSocket error.' }]);
     };
 
+    // Scroll
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
     return () => ws.current?.close();
   }, [usePortReplacement, username]);
 
@@ -73,6 +76,9 @@ function App() {
       ws.current.send(JSON.stringify(msg));
       setMessages((prev) => [...prev, { ...msg, local: true }]);
       setInput('');
+
+      // I don't know why this is needed here.
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   };
 
@@ -90,7 +96,7 @@ function App() {
                 localStorage.setItem('usePortReplacement', checked);
               }}
             />
-            codespace
+            <span style={{fontStyle: "revert"}}>&nbsp;codespace</span>
           </label>
         </div>
       </h3>
@@ -101,7 +107,7 @@ function App() {
             <span>{msg.text}</span>
           </div>
         ))}
-         <div ref={bottomRef} />
+         <div ref={bottomRef} class="scollSpacer" />
       </div>
       <div className="input-row">
         <input

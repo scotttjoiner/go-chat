@@ -1,4 +1,4 @@
-.PHONY: all chat-ai chat-service chat-gateway scripts proto clean test lint build fmt node
+.PHONY: all chat-ai chat-service chat-gateway chat-client scripts proto clean test lint build fmt node
 
 ## Run everything
 all: proto build test
@@ -60,6 +60,9 @@ chat-gateway-test:
 
 chat-gateway-lint:
 	$(MAKE) -C chat-gateway lint
+
+chat-client-build:
+	$(MAKE) -C chat-client build
 
 scripts-build:
 	$(MAKE) -C scripts build

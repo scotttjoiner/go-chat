@@ -9,8 +9,7 @@ body {
 }
 
 .chat-container {
-  width: 100%;
-  min-width: 600px;
+  width: 600px;
   margin: auto;
   padding: 1rem;
   background: white;
@@ -26,15 +25,19 @@ body {
   border: 1px solid #ccc;
   padding: 1rem;
   height: 400px;
-  overflow-y: auto;
   border-radius: 5px;
+  padding-bottom: 24px;
+  overflow-y: auto;
+}
+
+.scollSpacer {
+  height: 45px;
 }
 
 .message {
   margin: 0.5rem 0;
   padding: 0.5rem;
   border-radius: 5px;
-  max-width: 80%;
 }
 
 .message.system {
@@ -46,6 +49,7 @@ body {
   background-color: #dcf8c6;
   align-self: flex-end;
   text-align: right;
+  border-right: 4px solid darkcyan;
 }
 
 .message.ai {
