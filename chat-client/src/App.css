@@ -40,7 +40,7 @@ body {
 }
 
 .chat-container {
-  width: 600px;
+  width: 60vw;
   margin: auto;
   padding: 1rem;
   background: var(--container-bg);
@@ -55,14 +55,14 @@ body {
   background: var(--chat-bg);
   border: 1px solid var(--border-color);
   padding: 1rem;
-  height: 400px;
+  height: 60vh;
   border-radius: 5px;
-  padding-bottom: 24px;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .scollSpacer {
-  height: 45px;
+  height: 10vh;
+  display: block;
 }
 
 .message {
@@ -86,6 +86,7 @@ body {
 .message.ai {
   background-color: var(--bubble-ai);
   align-self: flex-start;
+  text-align: left;
   border-left: 4px solid var(--ai-border);
 }
 

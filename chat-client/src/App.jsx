@@ -21,7 +21,11 @@ function App() {
   const [usePortReplacement, setUsePortReplacement] = useState(() => {
     return localStorage.getItem('usePortReplacement') === 'true';
   });
+
   const bottomRef = useRef(null);
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
 
   useEffect(() => {
     
@@ -38,9 +42,7 @@ function App() {
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (!data.text || !data.user) return;
-
-        if (data.user === username) return; // filter own echoed messages
+        if (!data.text || !data.user) return; //  || data.user === username
         setMessages((prev) => [...prev, { ...data }]);
       } catch {
         setMessages((prev) => [...prev, { system: true, text: event.data }]);
@@ -60,9 +62,6 @@ function App() {
       setMessages((prev) => [...prev, { system: true, text: 'WebSocket error.' }]);
     };
 
-    // Scroll
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
     return () => ws.current?.close();
   }, [usePortReplacement, username]);
 
@@ -76,9 +75,7 @@ function App() {
       ws.current.send(JSON.stringify(msg));
       setMessages((prev) => [...prev, { ...msg, local: true }]);
       setInput('');
-
-      // I don't know why this is needed here.
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      scrollToBottom();
     }
   };
 
@@ -107,7 +104,7 @@ function App() {
             <span>{msg.text}</span>
           </div>
         ))}
-         <div ref={bottomRef} class="scollSpacer" />
+         <div ref={bottomRef} class="scollSpacer">&nbsp;</div>
       </div>
       <div className="input-row">
         <input
