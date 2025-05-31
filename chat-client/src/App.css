@@ -1,3 +1,33 @@
+:root {
+  --bg-color: #f9f9f9;
+  --container-bg: #ffffff;
+  --chat-bg: #f4f4f4;
+  --text-color: #000000;
+  --bubble-self: #dcf8c6;
+  --bubble-ai: #e6f0ff;
+  --bubble-other: #ffffff;
+  --system-color: gray;
+  --border-color: #ccc;
+  --self-border: darkcyan;
+  --ai-border: #0077ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1e1e1e;
+    --container-bg: #2b2b2b;
+    --chat-bg: #1a1a1a;
+    --text-color: #eaeaea;
+    --bubble-self: #325c4c;
+    --bubble-ai: #1e3a5f;
+    --bubble-other: #2f2f2f;
+    --system-color: #999;
+    --border-color: #444;
+    --self-border: #54b39a;
+    --ai-border: #4da3ff;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -5,14 +35,15 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #f9f9f9;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
 .chat-container {
   width: 600px;
   margin: auto;
   padding: 1rem;
-  background: white;
+  background: var(--container-bg);
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   display: flex;
@@ -21,8 +52,8 @@ body {
 }
 
 .chat-log {
-  background: #f4f4f4;
-  border: 1px solid #ccc;
+  background: var(--chat-bg);
+  border: 1px solid var(--border-color);
   padding: 1rem;
   height: 400px;
   border-radius: 5px;
@@ -41,25 +72,25 @@ body {
 }
 
 .message.system {
-  color: gray;
+  color: var(--system-color);
   font-style: italic;
 }
 
 .message.self {
-  background-color: #dcf8c6;
+  background-color: var(--bubble-self);
   align-self: flex-end;
   text-align: right;
-  border-right: 4px solid darkcyan;
+  border-right: 4px solid var(--self-border);
 }
 
 .message.ai {
-  background-color: #e6f0ff;
+  background-color: var(--bubble-ai);
   align-self: flex-start;
-  border-left: 4px solid #0077ff;
+  border-left: 4px solid var(--ai-border);
 }
 
 .message.other {
-  background-color: #ffffff;
+  background-color: var(--bubble-other);
   align-self: flex-start;
 }
 
@@ -76,9 +107,15 @@ input[type="text"] {
   flex: 1;
   padding: 0.5rem;
   font-size: 1rem;
+  background-color: var(--container-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 
 button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
+  background-color: var(--bubble-ai);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
